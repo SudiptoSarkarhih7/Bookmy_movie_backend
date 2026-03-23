@@ -4,7 +4,7 @@ import roleRoutes from "./src/routes/role.routes.js";
 
 const router = Router();
 
-router.use("/auth", userRoutes);
+router.use("/auth/customer", userRoutes);
 router.use("/role", roleRoutes);
 
 export default router;
