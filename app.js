@@ -10,6 +10,9 @@ const app = express();
 app.use(express.json());
 app.use("/api/v1", routes);
 
+// root route
+app.get("/", (req, res) => res.send("Server is running..."));
+
 // Global error handler (must be after routes)
 app.use(errorHandler);
 
