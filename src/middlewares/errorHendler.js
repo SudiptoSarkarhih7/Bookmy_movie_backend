@@ -1,4 +1,5 @@
 const errorHandler = (err, req, res, next) => {
+  // console.log("Inside errorHandler");
   let statusCode = err.statusCode || 500;
   let message = err.message || "Something went wrong!";
 
@@ -44,9 +45,10 @@ const errorHandler = (err, req, res, next) => {
   }
 
   if (process.env.NODE_ENV === "development") {
-    console.error(err);
+    console.error(statusCode, err.message.red.bold);
+    console.error(err.stack);
   }
-  console.log(process.env.NODE_ENV)
+  // console.log(process.env.NODE_ENV)
 
   const payload = {
     success: false,
@@ -54,7 +56,6 @@ const errorHandler = (err, req, res, next) => {
     // Only expose stack trace in development
     stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
   };
-  
 
   return res.status(statusCode).json(payload);
 };

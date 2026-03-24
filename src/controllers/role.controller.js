@@ -5,7 +5,7 @@ export const createRoleController = async (req, res) => {
   try {
     const { role, permissions  } = req.body;
     if (!role || !permissions) {
-      throw createError(400, "All fields required");
+      throw new Error("All fields required");
     }
     const createRole = await createRoleService(role, permissions);
     res.status(201).json(createRole);

@@ -1,19 +1,23 @@
 import { get } from "mongoose";
-import { createRole, findRoleByName, getAllRoles } from "../repositories/role.repository.js";
+import {
+  createRole,
+  findRoleByName,
+  getAllRoles,
+} from "../repositories/role.repository.js";
 
 export const createRoleService = async (role, permissions) => {
   try {
-    const isRoleExist = await findRoleByName(role);
+    let roleName = role.toUpperCase();
+    const isRoleExist = await findRoleByName(roleName);
     if (isRoleExist) {
       throw new Error("Role already exists");
     }
 
-    return await createRole({ role, permissions });
+    return await createRole({ role: roleName, permissions });
   } catch (error) {
     throw new Error(error.message);
   }
 };
-
 
 export const getAllRolesService = async () => {
   try {

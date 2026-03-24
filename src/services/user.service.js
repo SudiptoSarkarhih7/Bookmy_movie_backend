@@ -6,38 +6,57 @@ import { passwordCheck } from "../helper/passwordHelper.js";
 import { generateToken } from "../helper/authHelper.js";
 import createError from "../helper/createError.js";
 
-export const registerUser = async ({ name, email, password }) => {
+export const registerUser = async (body, rolename) => {
+ try {
+   const { name, email, password , ...rest  } = body;
   const existingUser = await userRepo.findUserByEmail(email);
   if (existingUser) {
     throw new Error("User already exists");
   }
 
 // Find customer role 
-  const role = await roleRepo.findRoleByName("customer");
+  const role = await roleRepo.findRoleByName(rolename);
   if (!role) {
     throw new Error("Customer role not found");
   }
 
+  let isVarified = false;
+  if (role.role === "CUSTOMER") {
+    isVarified = true;
+  }
+
+  
   return userRepo.createUser({
     name,
     email,
     password,
     role: role._id,
+    isVarified,
+    ...rest
   });
+ } catch (error) {
+  throw new Error(error.message);
+ }
 };
 
 export const loginUserService = async ({ email, password }) => {
   try {
+    // console.log('inside login client')
     const user = await userRepo.findUserByEmail(email);
+    // console.log('inside login client' + user)
+
     if (!user) {
-      throw new Error("User does not exist");
+      throw createError(404, "User not found");
     }
-    // console.log(user);
+
+
+    if(user.isVarified === false){
+      throw createError(401, "User not varified");
+    }
     const ifMatch = await passwordCheck(password, user.password);
-    console.log("ifMatch : ", ifMatch);
-    
+
     if (!ifMatch) {
-      throw new Error("Password does not match");
+      throw createError(401, "Invalid credentials");
     }
 
     const token = generateToken(user._id, user.role);
@@ -50,6 +69,6 @@ export const loginUserService = async ({ email, password }) => {
       token,
     };
   } catch (error) {
-    throw createError(400, error.message);
+    throw error;
   }
 };

@@ -1,9 +1,22 @@
 import { Router } from "express";
-import { loginUserController, registerUserController } from "../controllers/user.controller.js";
+import { validate } from "../middlewares/validator.js";
+
+import {
+  customerRegisterController,
+  loginUserController,
+} from "../controllers/user.controller.js";
+import {
+  customerLoginValidation,
+  customerRegisterValidation,
+} from "../validators/customerValidator.js";
 
 const router = Router();
 
-router.post('/register',registerUserController)
-router.post('/login', loginUserController);
+router.post(
+  "/register",
+  validate(customerRegisterValidation),
+  customerRegisterController,
+);
+router.post("/login", validate(customerLoginValidation), loginUserController);
 
 export default router;

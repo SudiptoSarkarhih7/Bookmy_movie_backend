@@ -2,31 +2,26 @@
 import createError from "../helper/createError.js";
 import { loginUserService, registerUser } from "../services/user.service.js";
 
-export const customerRegisterController = async (req, res, next) => {
+export const clientRegisterController = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    
-    const user = await registerUser(req.body, "CUSTOMER");
+    const registerClient = await registerUser(req.body, "CLIENT");
 
     res.status(201).json({
       success: true,
       data: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
+        id: registerClient._id,
+        name: registerClient.name,
+        email: registerClient.email,
       },
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    throw new Error(error.message);
   }
 };
 
-export const loginUserController = async (req, res) => {
+export const clientLoginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
-      throw createError(400, "All fields required");
-    }
 
     const result = await loginUserService({ email, password });
     res.cookie("authorization", result.token, {
@@ -37,6 +32,7 @@ export const loginUserController = async (req, res) => {
 
     res.status(200).json(result);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.log("first")
+    next(error);
   }
 };
