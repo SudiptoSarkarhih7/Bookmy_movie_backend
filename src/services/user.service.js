@@ -11,13 +11,13 @@ export const registerUser = async (body, rolename) => {
    const { name, email, password , ...rest  } = body;
   const existingUser = await userRepo.findUserByEmail(email);
   if (existingUser) {
-    throw new Error("User already exists");
+    throw createError(400, "User already exists");
   }
 
 // Find customer role 
   const role = await roleRepo.findRoleByName(rolename);
   if (!role) {
-    throw new Error("Customer role not found");
+    throw createError(404, "Role not found");
   }
 
   let isVarified = false;
@@ -35,7 +35,7 @@ export const registerUser = async (body, rolename) => {
     ...rest
   });
  } catch (error) {
-  throw new Error(error.message);
+  throw error;
  }
 };
 
@@ -68,6 +68,18 @@ export const loginUserService = async ({ email, password }) => {
       role: user.role.role,
       token,
     };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getProfileService = async (id) => {
+  try {
+    const user = await userRepo.findUserById(id);
+    if (!user) {
+      throw createError(404, "User not found");
+    }
+    return user;
   } catch (error) {
     throw error;
   }

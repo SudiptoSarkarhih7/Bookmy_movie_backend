@@ -4,6 +4,7 @@ import { validate } from "../middlewares/validator.js";
 import {
   customerRegisterController,
   loginUserController,
+  logoutUserController,
 } from "../controllers/user.controller.js";
 import {
   customerLoginValidation,
@@ -17,6 +18,11 @@ router.post(
   validate(customerRegisterValidation),
   customerRegisterController,
 );
-router.post("/login", validate(customerLoginValidation), loginUserController);
+router.post(
+  "/login", 
+  validate(customerLoginValidation), 
+  loginUserController);
+  
+router.delete("/logout", logoutUserController);
 
 export default router;

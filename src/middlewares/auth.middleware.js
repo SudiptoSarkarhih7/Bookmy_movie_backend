@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import createError from "../helper/createError.js";
 
-const authCheck = async (req, res, next) => {
+const   authCheck = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -13,7 +13,7 @@ const authCheck = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     if (error.name === "TokenExpiredError") {
       return next(createError(401, "Token has expired"));
     }

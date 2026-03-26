@@ -5,7 +5,7 @@ import { loginUserService, registerUser } from "../services/user.service.js";
 export const customerRegisterController = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-    
+
     const user = await registerUser(req.body, "CUSTOMER");
 
     res.status(201).json({
@@ -38,5 +38,18 @@ export const loginUserController = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+export const logoutUserController = async (req, res, next) => {
+  try {
+    res.cookie("authorization", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    next(error);
   }
 };
