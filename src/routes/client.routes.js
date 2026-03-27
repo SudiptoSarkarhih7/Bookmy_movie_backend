@@ -28,4 +28,6 @@ router.get("/profile",authCheck, clientProfileController);
 
 router.delete("/logout", authCheck, logoutClientController);
 
+router.get('/dummy', authCheck, (req, res) => res.send('Hello World!'));
+
 export default router;
