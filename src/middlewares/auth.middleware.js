@@ -1,15 +1,17 @@
 import jwt from "jsonwebtoken";
 import createError from "../helper/createError.js";
 
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+
 const   authCheck = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      next(createError(401, "You are not authenticated!"));
+      return next(createError(401, "You are not authenticated!"));
     }
 
     const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
     req.user = decoded;
     next();
   } catch (error) {

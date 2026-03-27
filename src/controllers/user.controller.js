@@ -1,6 +1,10 @@
 // src/controllers/user.controller.js
 import createError from "../helper/createError.js";
-import { loginUserService, registerUser } from "../services/user.service.js";
+import {
+  loginUserService,
+  refreshAccessTokenService,
+  registerUser,
+} from "../services/user.service.js";
 
 export const customerRegisterController = async (req, res, next) => {
   try {
@@ -29,7 +33,12 @@ export const loginUserController = async (req, res) => {
     }
 
     const result = await loginUserService({ email, password });
-    res.cookie("authorization", result.token, {
+    res.cookie("authorization", result.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.cookie("refreshToken", result.refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
@@ -48,7 +57,34 @@ export const logoutUserController = async (req, res, next) => {
       secure: true,
       sameSite: "none",
     });
+    res.cookie("refreshToken", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
     res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const refreshTokenController = async (req, res, next) => {
+  try {
+    const refreshToken = req.body?.refreshToken || req.cookies?.refreshToken;
+    const tokens = await refreshAccessTokenService(refreshToken);
+
+    res.cookie("authorization", tokens.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.cookie("refreshToken", tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    res.status(200).json(tokens);
   } catch (error) {
     next(error);
   }

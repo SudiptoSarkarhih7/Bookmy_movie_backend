@@ -9,6 +9,7 @@ import {
   clientProfileController,
   clientRegisterController,
   logoutClientController,
+  refreshClientTokenController,
 } from "../controllers/client.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
 
@@ -21,6 +22,7 @@ router.post(
 );
 
 router.post("/login", validate(clientLoginValidation), clientLoginController);
+router.post("/refresh-token", refreshClientTokenController);
 
 router.get("/profile",authCheck, clientProfileController);
 

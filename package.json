@@ -2,7 +2,7 @@
   "name": "movie-ticket-booking-backend-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
@@ -13,6 +13,8 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "colors": "^1.4.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "joi": "^18.0.2",

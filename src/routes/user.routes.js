@@ -5,6 +5,7 @@ import {
   customerRegisterController,
   loginUserController,
   logoutUserController,
+  refreshTokenController,
 } from "../controllers/user.controller.js";
 import {
   customerLoginValidation,
@@ -23,6 +24,7 @@ router.post(
   validate(customerLoginValidation), 
   loginUserController);
   
+router.post("/refresh-token", refreshTokenController);
 router.delete("/logout", logoutUserController);
 
 export default router;

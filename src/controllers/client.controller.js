@@ -1,6 +1,10 @@
 // src/controllers/user.controller.js
-import createError from "../helper/createError.js";
-import { getProfileService, loginUserService, registerUser } from "../services/user.service.js";
+import {
+  getProfileService,
+  loginUserService,
+  refreshAccessTokenService,
+  registerUser,
+} from "../services/user.service.js";
 
 export const clientRegisterController = async (req, res, next) => {
   try {
@@ -24,7 +28,12 @@ export const clientLoginController = async (req, res, next) => {
     const { email, password } = req.body;
 
     const result = await loginUserService({ email, password });
-    res.cookie("authorization", result.token, {
+    res.cookie("authorization", result.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.cookie("refreshToken", result.refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
@@ -32,14 +41,12 @@ export const clientLoginController = async (req, res, next) => {
 
     res.status(200).json(result);
   } catch (error) {
-    console.log("first");
     next(error);
   }
 };
 
 export const clientProfileController = async (req, res, next) => {
   try {
-
     const { _id: id, email } = req.user;
 
     const profile = await getProfileService(id);
@@ -60,7 +67,34 @@ export const logoutClientController = async (req, res, next) => {
       secure: true,
       sameSite: "none",
     });
+    res.cookie("refreshToken", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
     res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const refreshClientTokenController = async (req, res, next) => {
+  try {
+    const refreshToken = req.body?.refreshToken || req.cookies?.refreshToken;
+    const tokens = await refreshAccessTokenService(refreshToken);
+
+    res.cookie("authorization", tokens.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.cookie("refreshToken", tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    res.status(200).json(tokens);
   } catch (error) {
     next(error);
   }

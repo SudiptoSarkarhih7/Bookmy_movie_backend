@@ -5,6 +5,8 @@ export const validate = (schema) => {
     });
 
     if (error) {
+      // console.log(error)
+      // next(error);
       return res.status(400).json({
         errors: error.details.map((err) => err.message),
       });
