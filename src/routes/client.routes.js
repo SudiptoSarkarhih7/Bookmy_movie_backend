@@ -28,6 +28,10 @@ router.get("/profile", authCheck, clientProfileController);
 
 router.delete("/logout", authCheck, logoutClientController);
 
-router.get("/dummy", authCheck, (req, res) => res.send("Hello World!"));
+router.get("/dummy", authCheck, (req, res) => res.status(200).json({
+  success: true,
+  message: "You are authenticated",
+  data:{}
+}));
 
 export default router;
