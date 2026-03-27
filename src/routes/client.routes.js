@@ -22,7 +22,7 @@ router.post(
 );
 
 router.post("/login", validate(clientLoginValidation), clientLoginController);
-router.post("/refresh-token", refreshClientTokenController);
+router.post("/access-token", refreshClientTokenController);
 
 router.get("/profile",authCheck, clientProfileController);
 
