@@ -24,10 +24,10 @@ router.post(
 router.post("/login", validate(clientLoginValidation), clientLoginController);
 router.post("/access-token", refreshClientTokenController);
 
-router.get("/profile",authCheck, clientProfileController);
+router.get("/profile", authCheck, clientProfileController);
 
 router.delete("/logout", authCheck, logoutClientController);
 
-router.get('/dummy', authCheck, (req, res) => res.send('Hello World!'));
+router.get("/dummy", authCheck, (req, res) => res.send("Hello World!"));
 
 export default router;

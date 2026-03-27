@@ -98,7 +98,11 @@ export const refreshClientTokenController = async (req, res, next) => {
       sameSite: "none",
     });
 
-    res.status(200).json(tokens);
+    res.status(200).json({
+      success: true,
+      message: "Token refreshed successfully",
+      data: tokens,
+    });
   } catch (error) {
     next(error);
   }
