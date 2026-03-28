@@ -5,6 +5,7 @@ import {
   refreshAccessTokenService,
   registerUser,
 } from "../services/user.service.js";
+import { successResponse } from "../utils/response.js";
 
 export const customerRegisterController = async (req, res, next) => {
   try {
@@ -12,13 +13,10 @@ export const customerRegisterController = async (req, res, next) => {
 
     const user = await registerUser(req.body, "CUSTOMER");
 
-    res.status(201).json({
-      success: true,
-      data: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+    return successResponse(res, 201, "Registration successful", {
+      id: user._id,
+      name: user.name,
+      email: user.email,
     });
   } catch (err) {
     next(err);
@@ -44,7 +42,7 @@ export const loginUserController = async (req, res) => {
       sameSite: "none",
     });
 
-    res.status(200).json(result);
+    return successResponse(res, 200, "Login successful", result);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -62,7 +60,7 @@ export const logoutUserController = async (req, res, next) => {
       secure: true,
       sameSite: "none",
     });
-    res.status(200).json({ message: "Logout successful" });
+    return successResponse(res, 200, "Logout successful", {});
   } catch (error) {
     next(error);
   }
@@ -84,7 +82,7 @@ export const refreshTokenController = async (req, res, next) => {
       sameSite: "none",
     });
 
-    res.status(200).json(tokens);
+    return successResponse(res, 200, "Token refreshed successfully", tokens);
   } catch (error) {
     next(error);
   }

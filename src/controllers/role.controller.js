@@ -1,5 +1,5 @@
-import createError from "../helper/createError.js";
 import { createRoleService , getAllRolesService } from "../services/role.service.js";
+import { successResponse } from "../utils/response.js";
 
 export const createRoleController = async (req, res) => {
   try {
@@ -8,7 +8,7 @@ export const createRoleController = async (req, res) => {
       throw new Error("All fields required");
     }
     const createRole = await createRoleService(role, permissions);
-    res.status(201).json(createRole);
+    return successResponse(res, 201, "Role created successfully", createRole);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -19,7 +19,9 @@ export const getAllRolesController = async (req, res) => {
     // console.log(process.env.NODE_ENV);
     // throw new Error("TokenExpiredError");
     const getAllRoles = await getAllRolesService();
-    res.status(200).json(getAllRoles);
+    return successResponse(res, 200, "Roles fetched successfully", {
+      roles: getAllRoles,
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

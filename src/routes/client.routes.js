@@ -12,6 +12,7 @@ import {
   refreshClientTokenController,
 } from "../controllers/client.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
+import { successResponse } from "../utils/response.js";
 
 const router = Router();
 
@@ -28,10 +29,8 @@ router.get("/profile", authCheck, clientProfileController);
 
 router.delete("/logout", authCheck, logoutClientController);
 
-router.get("/dummy", authCheck, (req, res) => res.status(200).json({
-  success: true,
-  message: "You are authenticated",
-  data:{}
-}));
+router.get("/dummy", authCheck, (req, res) =>
+  successResponse(res, 200, "You are authenticated", {}),
+);
 
 export default router;

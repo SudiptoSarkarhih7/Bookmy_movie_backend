@@ -1,22 +1,20 @@
-// src/controllers/user.controller.js
+// src/controllers/client.controller.js
 import {
   getProfileService,
   loginUserService,
   refreshAccessTokenService,
   registerUser,
 } from "../services/user.service.js";
+import { successResponse } from "../utils/response.js";
 
 export const clientRegisterController = async (req, res, next) => {
   try {
     const registerClient = await registerUser(req.body, "CLIENT");
 
-    res.status(201).json({
-      success: true,
-      data: {
-        id: registerClient._id,
-        name: registerClient.name,
-        email: registerClient.email,
-      },
+    return successResponse(res, 201, "Registration successful", {
+      id: registerClient._id,
+      name: registerClient.name,
+      email: registerClient.email,
     });
   } catch (error) {
     next(error);
@@ -39,11 +37,7 @@ export const clientLoginController = async (req, res, next) => {
       sameSite: "none",
     });
 
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-      data: result,
-    });
+    return successResponse(res, 200, "Login successful", result);
   } catch (error) {
     next(error);
   }
@@ -54,11 +48,7 @@ export const clientProfileController = async (req, res, next) => {
     const { _id: id, email } = req.user;
 
     const profile = await getProfileService(id);
-    return res.status(200).json({
-      success: true,
-      message: "Profile fetched successfully",
-      data: profile,
-    });
+    return successResponse(res, 200, "Profile fetched successfully", profile);
   } catch (error) {
     next(error);
   }
@@ -76,7 +66,7 @@ export const logoutClientController = async (req, res, next) => {
       secure: true,
       sameSite: "none",
     });
-    res.status(200).json({ message: "Logout successful" });
+    return successResponse(res, 200, "Logout successful", {});
   } catch (error) {
     next(error);
   }
@@ -98,11 +88,7 @@ export const refreshClientTokenController = async (req, res, next) => {
       sameSite: "none",
     });
 
-    res.status(200).json({
-      success: true,
-      message: "Token refreshed successfully",
-      data: tokens,
-    });
+    return successResponse(res, 200, "Token refreshed successfully", tokens);
   } catch (error) {
     next(error);
   }
