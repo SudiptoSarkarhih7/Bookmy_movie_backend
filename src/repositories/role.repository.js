@@ -9,6 +9,7 @@ export const findRoleByName = async (roleName) => {
   }
 };
 
+
 export const createRole = async (data) => {
   return await RoleModel.create(data);
 };
